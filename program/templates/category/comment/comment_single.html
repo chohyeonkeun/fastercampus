@@ -1,0 +1,7 @@
+<tr class="comment_row">
+    <td colspan="3" class="comment_text">{{comment.text}}</td>
+    <td>{{comment.nickname.username}}</td>
+    <td>{{comment.created}}</td>
+    <td><a href="{% url 'category:comment_update' comment.id %}" class="btn btn-warning btn-sm btn_comment_update">update</a></td>
+    <td><a href="{% url 'category:comment_delete' comment.id %}" class="btn btn-danger btn-sm btn_comment_delete">delete</a></td>
+</tr>

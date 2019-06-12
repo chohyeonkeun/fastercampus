@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Program List
+{% endblock %}
+
+{% block extra_style %}
+<style>
+    .row .card:hover {
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="height:100px"></div>
+<div class="row">
+    <div class="col"></div>
+    <div class="col-sm-12 col-md-12 col-lg-10 col-xl-8">
+        <div class="card-deck">
+            {% for object in object_list %}
+            <div class="card" onclick="location.href='{% url 'category:detail' object.id %}';">
+                <img src="{{object.image.url}}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">{{object.name}}</h5>
+                  <p class="card-text">{{object.description}}</p>
+                  <p class="card-text"><small class="text-muted">{{object.period}}</small></p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col"></div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+{% endblock %}
+

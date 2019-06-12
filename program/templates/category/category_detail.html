@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Category Detail
+{% endblock %}
+
+{% block content %}
+<div>
+    <h1>{{object.name}}</h1>
+    <p>{{object.name}} 학습, 모두 똑같이 해야할까? 나에게 딱 맞는 커리큘럼으로 FIT하게 공부하세요!</p>
+    <a href class="enroll">수강 신청하기</a>
+</div>
+<div>
+    <table>
+        <thead>
+            <tr>
+                <th>기간</th>
+                <th>일정</th>
+                <th>장소</th>
+                <th>문의</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    2019년 3월 1일 ~ 2019년 5월 30일<br>
+                    2019년 6월 1일 ~ 2019년 8월 31일<br>
+                    2019년 9월 1일 ~ 2019년 11월 30일<br>
+                    2019년 12월 1일 ~ 2020년 2월 28일
+                </td>
+                <td>
+                    월~금 09:00~14:00 / 14:00~19:00<br>
+                    / 19:00~24:00, 강의 5시간/일, 스터디 자유,<br>
+                    테스트 1시간/일
+                </td>
+                <td>
+                    2호선 성수역 부근 패스트캠퍼스 강의장
+                </td>
+                <td>
+                    조현근 매니저 02-8282-1004,<br>
+                    help@fastercampus.co.kr
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div>
+    <img src="{{object.image.url}}" style="width:300px; height:300px">
+    <div style="width:calc(100% - 300px); height:300px; float:right;">
+        <h3>{{object.detail_title}}</h3>
+        <p>{{object.detail_text}}</p>
+    </div>
+</div>
+
+<form action="{% url 'category:comment_create' object.id %}" method="post" id="comment_form">
+    {% csrf_token %}
+    <input type="hidden" name="is_ajax" value="">
+    <div class="form-row">
+        <div class="col-8">
+            {{comment_form.text}}
+        </div>
+        <div class="col">
+            <input type="submit" value="Comment" class="btn btn-outline-primary form-control">
+        </div>
+    </div>
+</form>
+<div id="docs_comment_list_area">
+    {% include 'category/comment_list.html' %}
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script type="text/javascript">
+$(function() {
+   $('#comment_form').submit(function(e) {
+       e.preventDefault()
+       $('input[name="is_ajax"]').val("1");
+       url = $(this).attr('action');
+       params = $(this).serialize();
+       $.ajax({
+           url:url,
+           method:"POST",
+           data:params
+       }).done(function(data) {
+           console.log(data);
+           $('#id_text').val("");
+           $('#comment_list tbody').prepend(data.html);
+           $('input[name="is_ajax"]').val("");
+       });
+       location.reload();
+       return false;
+   });
+});
+
+$(function() {
+   $('#comment_list .btn_comment_delete').click(function(e) {
+       e.preventDefault();
+       var input = confirm('댓글을 삭제하시겠습니까?');
+       if (input==true) {
+           comment = $(this).parents('tr');
+           url = $(this).attr('href')+"?is_ajax=1";
+
+           $.ajax({
+               url:url
+           }).done(function(data) {
+               if (data.works) {
+                   comment.remove();
+               }
+           });
+
+       }
+   });
+
+   $('.btn_comment_update').click(function(e) {
+       e.preventDefault();
+       url = $(this).attr('href')+'?is_ajax=1';
+       comment = $(this).parent().siblings('.comment_text');
+       input = "<input type='text' class='update_text' value='"+comment.text()+"'>";
+       comment.html(input);
+       $('.update_text').keypress(function(e){
+           if (e.keyCode==13) {
+               text = $(this).val();
+               $.ajax({
+                   url:url,
+                   data:{
+                       text:text
+                   }
+               }).done(function(data) {
+                   if(data.works) {
+                       comment.text(text);
+                   }
+               });
+           }
+       });
+   });
+});
+</script>
+{% endblock %}

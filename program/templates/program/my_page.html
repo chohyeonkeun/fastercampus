@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}
+My Page
+{% endblock %}
+
+{% block content %}
+<div class="container" style="width:80%">
+    <div style="margin:30px 0 30px 0"><h4><b>신청 내역</b></h4></div>
+
+    <div id="nothing-page" style="text-align:center; display:none;">
+        신청한 수업이 없습니다.
+    </div>
+    {% if object_list %}
+    <table style="width:100%; height:400px; margin-bottom:20px; border-top:solid; border-bottom:solid" >
+        <tr id="category-name">
+            <td>프로그램</td>
+            <td>기간</td>
+            <td>시간</td>
+            <td>강사</td>
+            <td>장소</td>
+            <td></td>
+        </tr>
+        {% for object in object_list %}
+        <tr>
+            <td><hr></td>
+            <td><hr></td>
+            <td><hr></td>
+            <td><hr></td>
+            <td><hr></td>
+            <td><hr></td>
+        </tr>
+        <tr>
+            <td>{{object.name}}</td>
+            <td>19.06.01 ~ 19.08.31</td>
+            <td>{{object.time}}</td>
+            <td>{{object.teacher}}</td>
+            <td>{{object.place}}</td>
+            <td><button style="font-size:12px;" class="btn btn-outline btn-light pull-right enroll_delete" value="{{object.id}}">신청 취소</button></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <input type="submit" style="float:right" class="btn btn-outline btn-primary pull-right" id="btn-payment" value="결제하기">
+    <div style="clear:right"></div>
+    {% else %}
+    <div style="text-align:center;">
+        신청한 수업이 없습니다.
+    </div>
+
+    {% endif %}
+    <hr>
+    <div>
+        Schedule 부분
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script type="text/javascript">
+$(function(){
+    $('.enroll_delete').click(function(e){
+        var check = confirm('해당 수업을 삭제하시겠습니까?');
+        if(check == true){
+            url = '{% url 'category:enroll_delete' %}';
+            obj_id = $(this).val();
+            obj_program = $(this).parents('tr');
+            $.ajax({
+                url: url,
+                method: "POST",
+                data: {
+                    'obj_id': obj_id,
+                    'csrfmiddlewaretoken':'{{csrf_token}}',
+                    'is_ajax': true,
+                },
+            }).done(function(data){
+                if(data.works) {
+                    obj_program.prev().remove();
+                    obj_program.remove();
+                    if (data.program_exists == false) {
+                        $('#category-name').parents('table').remove();
+                        $('#nothing-page').css('display','block');
+                        $('#btn-payment').css('display','none');
+                    }
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %}
+
