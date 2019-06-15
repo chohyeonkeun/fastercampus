@@ -133,6 +133,7 @@ from django.http import HttpResponse
 from .forms import ScheduleForm
 @login_required
 def program_submit(request):
+    # Program.filter(pk=obj_id_list[i])
     is_ajax = request.POST.get('is_ajax')
     program_list = Program.objects.all()
     if is_ajax:
