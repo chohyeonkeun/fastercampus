@@ -32,8 +32,8 @@ My Page
         </tr>
         <tr>
             <td>{{object.name}}</td>
-            <td>19.06.01 ~ 19.08.31</td>
-            <td>{{object.time}}</td>
+            <td>{{object.name.start_date|date:"Y-m-d"}} ~ {{object.name.end_date|date:"Y-m-d"}}</td>
+            <td>{{object.start_time|time:"H:i"}} ~ {{object.end_time|time:"H:i"}}</td>
             <td>{{object.teacher}}</td>
             <td>{{object.place}}</td>
             <td><button style="font-size:12px;" class="btn btn-outline btn-light pull-right enroll_delete" value="{{object.id}}">신청 취소</button></td>

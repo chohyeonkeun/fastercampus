@@ -10,13 +10,18 @@ class CommentInline(admin.TabularInline):
     model = Comment
 
 class CategoryOption(admin.ModelAdmin):
-    list_display = ['name', 'period', 'place']
+    list_display = ['name', 'start_date', 'end_date', 'place']
+    prepopulated_fields = {'slug':('name',)}
     inlines = [CommentInline]
 
+class ProgramOption(admin.ModelAdmin):
+    list_display = ['name', 'teacher']
+    prepopulated_fields = {'slug':('teacher',)}
+
 class ScheduleOption(admin.ModelAdmin):
-    list_display = ['name', 'teacher', 'time']
+    list_display = ['name', 'teacher', 'start_time', 'end_time']
 
 admin.site.register(Category, CategoryOption)
-admin.site.register(Program)
+admin.site.register(Program, ProgramOption)
 admin.site.register(Schedule, ScheduleOption)
 admin.site.register(Comment, CommentOption)

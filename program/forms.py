@@ -19,4 +19,4 @@ class CommentForm(forms.ModelForm):
 class ScheduleForm(forms.ModelForm):
     class Meta:
         model = Program
-        fields = ['name', 'teacher', 'time']
+        fields = ['name', 'teacher', 'start_time', 'end_time']

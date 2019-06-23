@@ -138,16 +138,22 @@ def program_submit(request):
     program_list = Program.objects.all()
     if is_ajax:
         obj_id_list = request.POST.getlist('obj_id_list[]')
-        # 수업 시간 중복해서 체크했는지 확인하여 중복 시, works가 아닌 overlaps를 데이터로 전달
         user = request.user
-        schedule = Schedule.objects.filter(user=user)
+        schedules = Schedule.objects.filter(user=user)
         for i in range(len(obj_id_list)):
             program = program_list.get(pk=int(obj_id_list[i]))
-            if schedule.filter(name=program.name).exists():
+            # 기존에 신schedules[0]하여 중복 시, enrolledName True 형태로 전달
+            if schedules.filter(name=program.name).exists():
                 return JsonResponse({'enrolledName': True})
-            if schedule.filter(time=program.time).exists():
-                return JsonResponse({'enrolledTime': True})
+            # 기존에 신청한 수업 시간과 중복해서 신청했는지 확인하여 중복 시, enrolledTime True 형태로 전달
+            for schedule in schedules:
+                if program.end_time > schedule.start_time and program.start_time < schedule.end_time:
+                    return JsonResponse({'enrolledTime':True})
 
+
+
+
+        # 신청할 때, 겹치는 시간대 신청했는지 확인하여 겹치는 시간대 있으면 overlaps True 형태로 전달
         for i in range(len(obj_id_list)):
             program_i = program_list.get(pk=int(obj_id_list[i]))
             if i == len(obj_id_list) - 1:
@@ -155,11 +161,11 @@ def program_submit(request):
             for j in range(len(obj_id_list) - i - 1):
                 j = j + i + 1
                 program_j = program_list.get(pk=int(obj_id_list[j]))
-                if program_i.time == program_j.time:
+                if program_i.end_time > program_j.start_time and program_i.start_time < program_j.end_time:
                     return JsonResponse({'overlaps':True})
 
 
-        # 수업시간 중복안했을 경우 요청한 user를 enroll 필드에 저장
+        # 수업시간 중복안했을 경우 요청한 user를 enroll 필드에 저장하고, works True 형태로 전달
         for obj_id in obj_id_list:
             program = Program.objects.get(pk=int(obj_id))
             user = request.user
@@ -169,7 +175,7 @@ def program_submit(request):
             if not user_program.exists():
                 program.enroll.add(user)
                 # 신청한 수업을 따로 schedule 모델에 저장
-                schedule = Schedule(user=user ,name=program.name, teacher=program.teacher, time=program.time)
+                schedule = Schedule(user=user ,name=program.name, teacher=program.teacher, start_time=program.start_time, end_time=program.end_time)
                 schedule.save()
         return JsonResponse({'works':True})
 
