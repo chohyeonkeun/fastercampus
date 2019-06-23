@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 class Category(models.Model):
     name = models.CharField(max_length=50)  # R 데이터 분석
+    slug = models.SlugField(max_length=70, db_index=True, unique=True, allow_unicode=True, blank=True)
     description = models.TextField()  # R을 활용하여 입문자도 쉽게 데이터 분석의 기초부터 실전까지 제대로 배워보세요!
     # period = models.CharField(max_length=100)  # 19.06.01~19.08.31
     start_date = models.DateTimeField(auto_now=False, auto_now_add=False, blank=True, null=True) # 19-06-01-%H-%M-%S
@@ -19,19 +20,20 @@ class Category(models.Model):
     def get_absolute_url(self):
         return reverse('category:detail', args=[self.id])
 
+
 class Program(models.Model):
     name = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="program_name")  # R 데이터 분석
-    # time = models.CharField(max_length=100)  # 19:00 ~ 24:00
     start_time = models.TimeField(auto_now=False, auto_now_add=False, blank=True, null=True) # 19:00:00
     end_time = models.TimeField(auto_now=False, auto_now_add=False, blank=True, null=True) # 24:00:00
-    # slug = models.SlugField(max_length=120, db_index=True, unique=True, allow_unicode=True, blank=True)
     teacher = models.CharField(max_length=20)  # 박지웅
+    slug = models.SlugField(max_length=70, db_index=True, unique=True, allow_unicode=True, blank=True)
     place = models.CharField(max_length=50)  # 2호선 성수역 부근 패스캠퍼스 B강의장
     enroll = models.ManyToManyField(get_user_model(), related_name="enrolled_program", blank=True)
 
     def __str__(self):
         return self.teacher
-    
+
+
 
 class Schedule(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, default="", related_name="schedule_user")
@@ -39,6 +41,8 @@ class Schedule(models.Model):
     teacher = models.CharField(max_length=20)
     start_time = models.TimeField(auto_now_add=False, blank=True, null=True)
     end_time = models.TimeField(auto_now=False, blank=True, null=True)
+
+
 
 class Comment(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="comment_category", default="")

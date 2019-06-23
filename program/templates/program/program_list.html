@@ -30,8 +30,8 @@ Program List
             {% for object in object_list %}
             <tr>
                 <td>{{object.name}}</td>
-                <td>19.06.01 ~ 19.08.31</td>
-                <td>{{object.time}}</td>
+                <td>{{object.name.start_date|date:"Y-m-d"}} ~ {{object.name.end_date|date:"Y-m-d"}}</td>
+                <td>{{object.start_time|time:"H:i"}} ~ {{object.end_time|time:"H:i"}}</td>
                 <td>{{object.teacher}}</td>
                 <td>{{object.place}}</td>
                 <td><input type="checkbox" class="programChecked" value="{{object.id}}" name="{{object.name}}"></td>
