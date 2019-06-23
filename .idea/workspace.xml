@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3a368a8f-c4d9-4cff-8f02-8f76262dfe63" name="Default Changelist" comment="">
-      <change afterPath="$USER_HOME$/.PyCharmCE2019.1/system/workspace/api_basic.1120bfef.xml" afterDir="false" />
-      <change afterPath="$USER_HOME$/.PyCharmCE2019.1/system/workspace/django-timetable.c5bbf0dc.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../../ajax_project/config/views.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../../ajax_project/layout/index.html" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../../ajax_project/layout/jquery.html" afterDir="false" />
@@ -52,32 +50,6 @@
       <change afterPath="$PROJECT_DIR$/../../editor_project/post/urls.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../../multi_database/config/master_slave_router.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../../multi_database/config/user_router.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/layout/base.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/program/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/program/templates/category/category_create.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/program/templates/category/category_delete.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/program/templates/category/category_detail.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/program/templates/category/category_list.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/program/templates/category/category_update.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/program/templates/category/comment/comment_delete.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/program/templates/category/comment/comment_single.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/program/templates/category/comment/comment_update.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/program/templates/category/comment_list.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/program/templates/program/program_list.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/program/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../python_api/.ebextensions/django.config" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../python_api/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../python_api/accounts/api_urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../python_api/accounts/serializers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../python_api/api_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../python_api/config/asset_storage.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../python_api/config/urls_api.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../python_api/layout/base.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../python_api/photo/api_urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../python_api/photo/serializers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../python_api/photo/templates/photo/photo_create.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../python_api/photo/templates/photo/photo_list.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../python_api/photo/urls.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../../wps_blog/layout/base.html" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../../wps_blog/post/context_processors.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../../wps_blog/post/templates/post/category_list.html" afterDir="false" />
@@ -99,7 +71,7 @@
       <change beforePath="$PROJECT_DIR$/../../dstagram_project/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../dstagram_project/config/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../dstagram_project/config/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../dstagram_project/config/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../dstagram_project/layout/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../dstagram_project/layout/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../dstagram_project/photo/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../dstagram_project/photo/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../dstagram_project/photo/migrations/0001_initial.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../dstagram_project/photo/migrations/0002_auto_20190501_0504.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../dstagram_project/photo/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../dstagram_project/photo/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../dstagram_project/photo/templates/photo/photo_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../dstagram_project/photo/templates/photo/photo_detail.html" afterDir="false" />
@@ -107,8 +79,8 @@
       <change beforePath="$PROJECT_DIR$/../../dstagram_project/photo/templates/photo/photo_slist.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../dstagram_project/photo/templates/photo/photo_saved.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../dstagram_project/photo/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../dstagram_project/photo/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../dstagram_project/photo/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../dstagram_project/photo/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/program/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/program/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/program/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/program/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -127,11 +99,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/program/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="247">
-              <caret line="142" column="52" selection-start-line="142" selection-start-column="43" selection-end-line="142" selection-end-column="52" />
+            <state relative-caret-position="363">
+              <caret line="147" column="44" lean-forward="true" selection-start-line="147" selection-start-column="44" selection-end-line="147" selection-end-column="44" />
               <folding>
                 <element signature="e#0#45#0" expanded="true" />
               </folding>
@@ -168,11 +140,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/program/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="304">
-              <caret line="40" column="33" selection-start-line="40" selection-start-column="33" selection-end-line="40" selection-end-column="33" />
+            <state relative-caret-position="475">
+              <caret line="40" column="53" lean-forward="true" selection-start-line="40" selection-start-column="53" selection-end-line="40" selection-end-column="53" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
@@ -273,10 +245,10 @@
         <option value="$PROJECT_DIR$/program/templates/program/my_page.html" />
         <option value="$PROJECT_DIR$/program/templates/program/program_list.html" />
         <option value="$PROJECT_DIR$/requirements.txt" />
-        <option value="$PROJECT_DIR$/program/views.py" />
         <option value="$PROJECT_DIR$/config/settings.py" />
         <option value="$PROJECT_DIR$/program/templates/program/fullcalandar.html" />
         <option value="$PROJECT_DIR$/program/models.py" />
+        <option value="$PROJECT_DIR$/program/views.py" />
       </list>
     </option>
   </component>
@@ -752,22 +724,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/program/views.py">
+    <entry file="file://$PROJECT_DIR$/program/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="142" column="52" selection-start-line="142" selection-start-column="43" selection-end-line="142" selection-end-column="52" />
+        <state relative-caret-position="475">
+          <caret line="40" column="53" lean-forward="true" selection-start-line="40" selection-start-column="53" selection-end-line="40" selection-end-column="53" />
           <folding>
-            <element signature="e#0#45#0" expanded="true" />
+            <element signature="e#0#28#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/program/models.py">
+    <entry file="file://$PROJECT_DIR$/program/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="40" column="33" selection-start-line="40" selection-start-column="33" selection-end-line="40" selection-end-column="33" />
+        <state relative-caret-position="363">
+          <caret line="147" column="44" lean-forward="true" selection-start-line="147" selection-start-column="44" selection-end-line="147" selection-end-column="44" />
           <folding>
-            <element signature="e#0#28#0" expanded="true" />
+            <element signature="e#0#45#0" expanded="true" />
           </folding>
         </state>
       </provider>

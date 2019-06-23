@@ -37,8 +37,8 @@ class Schedule(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, default="", related_name="schedule_user")
     name = models.CharField(max_length=50)
     teacher = models.CharField(max_length=20)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
+    start_time = models.TimeField(auto_now_add=False, blank=True, null=True)
+    end_time = models.TimeField(auto_now=False, blank=True, null=True)
 
 class Comment(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="comment_category", default="")
