@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'program',
     'board',
     'django_extensions',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -135,3 +137,7 @@ DJANGO_APPS = (
     'taggit',
     'timetable',
 )
+
+from django.urls import reverse_lazy
+LOGIN_URL = reverse_lazy('accounts:login')
+LOGIN_REDIRECT_URL = '/'

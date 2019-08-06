@@ -1,0 +1,1 @@
+naver_map = {'id':'ackem7a9bm'}

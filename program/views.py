@@ -20,8 +20,11 @@ from django.contrib import messages
 
 from django.urls import reverse
 
+from secret import naver_map
+
 def main_page(request):
-    return render(request, 'program/main_page.html')
+    categories = Category.objects.all()
+    return render(request, 'program/main_page.html', {'object_list':categories, 'naver_id':naver_map['id']})
 
 class Categorylist(ListView):
     model = Category
@@ -30,6 +33,7 @@ class Categorylist(ListView):
 class CategoryCreate(CreateView):
     model = Category
     template_name = 'category/category_create.html'
+    # permission_classes
 
 class CategoryUpdate(UpdateView):
     model = Category
@@ -128,9 +132,11 @@ def program_list(request):
     programs = Program.objects.all()
     return render(request, 'program/program_list.html', {'object_list':programs})
 
-from django.contrib.auth.decorators import login_required
+from util.decorators import login_required
 from django.http import HttpResponse
 from .forms import ScheduleForm
+
+
 @login_required
 def program_submit(request):
     # Program.filter(pk=obj_id_list[i])
@@ -142,15 +148,13 @@ def program_submit(request):
         schedules = Schedule.objects.filter(user=user)
         for i in range(len(obj_id_list)):
             program = program_list.get(pk=int(obj_id_list[i]))
-            # 기존에 신schedules[0]하여 중복 시, enrolledName True 형태로 전달
+            # 기존에 신청한 수업 이름과 중복 시, enrolledName True 형태로 전달
             if schedules.filter(name=program.name).exists():
                 return JsonResponse({'enrolledName': True})
             # 기존에 신청한 수업 시간과 중복해서 신청했는지 확인하여 중복 시, enrolledTime True 형태로 전달
             for schedule in schedules:
                 if program.end_time > schedule.start_time and program.start_time < schedule.end_time:
                     return JsonResponse({'enrolledTime':True})
-
-
 
 
         # 신청할 때, 겹치는 시간대 신청했는지 확인하여 겹치는 시간대 있으면 overlaps True 형태로 전달

@@ -8,7 +8,7 @@ Category Detail
 <div>
     <h1>{{object.name}}</h1>
     <p>{{object.name}} 학습, 모두 똑같이 해야할까? 나에게 딱 맞는 커리큘럼으로 FIT하게 공부하세요!</p>
-    <a href class="enroll">수강 신청하기</a>
+    <a href="{% url 'category:program_list' %}" class="enroll">수강 신청하기</a>
 </div>
 <div>
     <table>

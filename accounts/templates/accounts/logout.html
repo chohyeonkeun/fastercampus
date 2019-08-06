@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+<div class="col"></div>
+<div class="col-6">
+    <div class="alert alert-primary">You successfully log out.</div>
+    <a href="{% url 'accounts:login' %}" class="btn btn-outline-success">로그인</a>
+</div>
+<div class="col"></div>
+{% endblock %}

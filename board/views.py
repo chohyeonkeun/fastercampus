@@ -8,6 +8,9 @@ from django.template.loader import render_to_string
 from django.contrib import messages
 
 from django.db.models import Q
+from urllib.parse import urlparse
+from django.http import HttpResponseRedirect
+
 def document_list(request):
 
     page = int(request.GET.get('page', 1))
@@ -30,9 +33,13 @@ def document_list(request):
         if 'author' in search_type:
             temp_q = Q(author__icontains=search_key)
             search_q = search_q | temp_q if search_q else temp_q
-        documents = get_list_or_404(Document, search_q)
+        documents = Document.objects.filter(search_q)
+        if not documents.exists():
+            referer_url = request.META.get('HTTP_REFERER')
+            path = urlparse(referer_url).path
+            return HttpResponseRedirect(path)
     else:
-        documents = get_list_or_404(Document)
+        documents = Document.objects.all()
 
 
     total_count = len(documents)

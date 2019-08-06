@@ -40,10 +40,7 @@ Board Deatil
 {% block extra_script %}
 <script type="text/javascript">
 $(function() {
-    // 1. 누구한테 이벤트를 설정할것이냐?
-    // 2. 어떤 이벤트를 설정할것이냐?
     $('#comment_form').submit(function(e) {
-        // alert('댓글쓰기 완료');
         // 댓글 남기기
         $('input[name="is_ajax"]').val("1");
         url = $(this).attr('action');

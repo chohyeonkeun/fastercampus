@@ -6,6 +6,7 @@ from django.urls import reverse
 class Category(models.Model):
     name = models.CharField(max_length=50)  # R 데이터 분석
     slug = models.SlugField(max_length=70, db_index=True, unique=True, allow_unicode=True, blank=True)
+    english_name = models.CharField(max_length=50, default="")
     description = models.TextField()  # R을 활용하여 입문자도 쉽게 데이터 분석의 기초부터 실전까지 제대로 배워보세요!
     # period = models.CharField(max_length=100)  # 19.06.01~19.08.31
     start_date = models.DateTimeField(auto_now=False, auto_now_add=False, blank=True, null=True) # 19-06-01-%H-%M-%S

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% block title %}문의사항{% endblock %}
 {% block content %}
 <a href="{% url 'board:create' %}">
     <div class="col-auto my-1" align="left">
@@ -37,7 +37,7 @@
 
 
 <form action="" method="get" id="search_form" class="">
-    {%csrf_token%}
+    {% csrf_token %}
     <div class="form-row align-items-center justify-content-center">
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="username" name="search_type">
