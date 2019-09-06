@@ -4,49 +4,79 @@
 My Page
 {% endblock %}
 
+{% block extra_style %}
+<style>
+    .enroll_delete:hover{
+        cursor:pointer;
+    }
+    .pay-completed:hover {
+        cursor:pointer;
+    }
+    .pay-completed-hide:hover {
+        cursor:pointer;
+    }
+
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container" style="width:80%">
-    <div style="margin:30px 0 30px 0"><h4><b>신청 내역</b></h4></div>
+<div class="container" style="padding-top:50px;">
+    <div style="text-align:center;width:200px;margin:30px auto 60px auto"><h2><b>신청 내역</b></h2></div>
 
     <div id="nothing-page" style="text-align:center; display:none;">
         신청한 수업이 없습니다.
     </div>
     {% if object_list %}
-    <table style="width:100%; height:400px; margin-bottom:20px; border-top:solid; border-bottom:solid" >
-        <tr id="category-name">
-            <td>프로그램</td>
-            <td>기간</td>
-            <td>시간</td>
-            <td>강사</td>
-            <td>장소</td>
-            <td></td>
-        </tr>
-        {% for object in object_list %}
-        <tr>
-            <td><hr></td>
-            <td><hr></td>
-            <td><hr></td>
-            <td><hr></td>
-            <td><hr></td>
-            <td><hr></td>
-        </tr>
-        <tr>
-            <td>{{object.name}}</td>
-            <td>{{object.name.start_date|date:"Y-m-d"}} ~ {{object.name.end_date|date:"Y-m-d"}}</td>
-            <td>{{object.start_time|time:"H:i"}} ~ {{object.end_time|time:"H:i"}}</td>
-            <td>{{object.teacher}}</td>
-            <td>{{object.place}}</td>
-            <td><button style="font-size:12px;" class="btn btn-outline btn-light pull-right enroll_delete" value="{{object.id}}">신청 취소</button></td>
-        </tr>
-        {% endfor %}
-    </table>
-    <input type="submit" style="float:right" class="btn btn-outline btn-primary pull-right" id="btn-payment" value="결제하기">
-    <div style="clear:right"></div>
+    <form action="{% url 'category:pay_proceed' %}" method="post" id="payProgram">
+        <table class="table table-hover" >
+            <thead style="text-align:center;">
+                <tr id="category-name">
+                    <th scope="col">선택</th>
+                    <th scope="col">프로그램</th>
+                    <th scope="col">기간</th>
+                    <th scope="col">시간</th>
+                    <th scope="col">강사</th>
+                    <th scope="col">장소</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for object in object_list %}
+                <tr>
+                    <td>&nbsp;&nbsp;&nbsp;<input type="checkbox" class="programChecked" value="{{object.id}}" name="{{object.name}}"></td>
+                    <td>{{object.name}}</td>
+                    <td>{{object.name.start_date|date:"Y-m-d"}} ~ {{object.name.end_date|date:"Y-m-d"}}</td>
+                    <td>{{object.start_time|time:"H:i"}} ~ {{object.end_time|time:"H:i"}}</td>
+                    <td>{{object.teacher}}</td>
+                    <td>{{object.place}}</td>
+                    {% if not user in object.payed.all %}
+                        <td><a href="#" style="font-size:12px;color:rgb(153, 153, 153);" class="btn btn-light pull-right enroll_delete" value="{{object.id}}">신청 취소</a></td>
+                    {% else %}
+                        <td>
+                            <a href="#" style="font-size:12px;color:rgb(0, 102, 255);" class="btn btn-outline-primary pay-completed">결제 완료</a>
+                            <a href="#" style="font-size:12px;color:rgb(153, 153, 153);" class="btn btn-light pay-completed-hide" value="{{object.id}}">삭제</a>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <input type="submit" style="float:right" class="btn btn-primary pull-right" id="btn-pay" value="결제하기">
+    </form>
+    <div style="clear:both"></div>
     {% else %}
     <div style="text-align:center;">
         신청한 수업이 없습니다.
     </div>
-
     {% endif %}
 </div>
 {% endblock %}
@@ -81,7 +111,82 @@ $(function(){
             });
         }
     });
+
+    $('.pay-completed-hide').click(function(e){
+        e.preventDefault();
+        var check = confirm('결제된 수업을 화면에서 사라지도록 하시겠습니까?');
+
+        if(check == true){
+            url = '{% url 'category:completed_hide' %}';
+            obj_id = $(this).val();
+            obj_program = selected_object.parents('tr');
+            $.ajax({
+                url: url,
+                method: "POST",
+                data: {
+                    'obj_id': obj_id,
+                    'csrfmiddlewaretoken':'{{csrf_token}}',
+                },
+            }).done(function(data){
+                if(data.works) {
+                    obj_program.prev().remove();
+                    obj_program.remove();
+                    if (data.program_exists == false) {
+                        $('#category-name').parents('table').remove();
+                        $('#nothing-page').css('display','block');
+                        $('#btn-payment').css('display','none');
+                    }
+                } else if (data.notLogin){
+                    alert('로그인이 필요합니다.');
+                } else {
+                    alert('정상적인 요청이 아닙니다.');
+                }
+            });
+        }
+    });
+
+    $('#payProgram').submit(function(e){
+        e.preventDefault();
+        var count = 0;
+        var obj_id_list = new Array();
+
+        $('input[class=programChecked]:checked').each(function() {
+            obj_id_list.push($(this).val());
+            count += 1;
+        });
+
+        if(count == 0) {
+            alert('결제할 수업을 선택해주세요.');
+        }
+        if(count > 0) {
+            var check = confirm('총 '+count+'개 수업을 선택하셨습니다. \n결제하시겠습니까?');
+            if(check == true){
+                url = $('#payProgram').attr('action');
+                jQuery.ajaxSettings.traditional = true;
+
+                $.ajax({
+                    url : url,
+                    method: 'POST',
+                    data: {
+                        'obj_id_list[]' : obj_id_list,
+                        'csrfmiddlewaretoken':'{{csrf_token}}',
+                    }
+                }).done(function(data){
+                    if(data.notLogin){
+                        alert('결제를 하기 위해서는 로그인이 필요합니다.');
+                    } if(data.works){
+                        alert('결제 완료되었습니다.');
+                        location.reload();
+                    } if(data.payedProgram){
+                        alert('이미 결제한 수업입니다. 다른 수업을 결제해주세요.');
+                    } else {
+                        location.reload();
+                    }
+                });
+            }
+        }
+    });
+
 });
 </script>
 {% endblock %}
-

@@ -14,9 +14,3 @@ class CommentForm(forms.ModelForm):
         self.fields['text'].widget = forms.TextInput()
         self.fields['text'].widget.attrs = {"class": "form-control", "placeholder": "댓글을 입력하세요."}
 
-
-
-class ScheduleForm(forms.ModelForm):
-    class Meta:
-        model = Program
-        fields = ['name', 'teacher', 'start_time', 'end_time']

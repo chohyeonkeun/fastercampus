@@ -1,16 +1,19 @@
 {% extends 'base.html' %}
 {% block title %}
-Document Create
+문의내용 작성
 {% endblock %}
 
 {% block content %}
-<form action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-
-    <table>
+<div class="container" style="padding-top:50px;">
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table class="table table-striped">
         {{form.as_table}}
-    </table>
-
-    <input type="submit" value="Write" class="btn btn-primary" align="right">
-</form>
+        </table>
+        <div style="float:right;">
+            <a href="{% url 'board:list' %}" class="btn btn-outline-primary" style="margin-right:10px;">목록</a>
+            <input type="submit" class="btn btn-primary" value="작성하기">
+        </div>
+    </form>
+</div>
 {% endblock %}

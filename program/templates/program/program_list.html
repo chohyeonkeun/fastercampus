@@ -5,63 +5,74 @@ Program List
 {% endblock %}
 
 {% block content %}
-<div class="container" style="width:80%">
-    <div style="margin:30px 0 30px 0"><h4><b>수강 신청</b></h4></div>
+<div class="container" style="padding-top:50px;">
+    <div style="text-align:center;width:200px;margin:30px auto 60px auto"><h2><b>수강 신청</b></h2></div>
     <form action="{% url 'category:program_submit' %}" method="post" id="program_form" style="margin:20px 0 15px 0">
         {% csrf_token %}
-        <table style="width:100%; height:400px; margin-bottom:20px; border-top:solid; border-bottom:solid">
-            <tr>
-                <td>프로그램</td>
-                <td>기간</td>
-                <td>시간</td>
-                <td>강사</td>
-                <td>장소</td>
-                <td>선택</td>
-            </tr>
-            <tr>
-                <td><hr></td>
-                <td><hr></td>
-                <td><hr></td>
-                <td><hr></td>
-                <td><hr></td>
-                <td><hr></td>
-            </tr>
-
-            {% for object in object_list %}
-            <tr>
-                <td>{{object.name}}</td>
-                <td>{{object.name.start_date|date:"Y-m-d"}} ~ {{object.name.end_date|date:"Y-m-d"}}</td>
-                <td>{{object.start_time|time:"H:i"}} ~ {{object.end_time|time:"H:i"}}</td>
-                <td>{{object.teacher}}</td>
-                <td>{{object.place}}</td>
-                <td><input type="checkbox" class="programChecked" value="{{object.id}}" name="{{object.name}}"></td>
-            </tr>
-            {% ifequal forloop.counter 3 %}
-            <tr>
-                <td><hr></td>
-                <td><hr></td>
-                <td><hr></td>
-                <td><hr></td>
-                <td><hr></td>
-                <td><hr></td>
-            </tr>
-            {% endifequal %}
-            {% ifequal forloop.counter 6 %}
-            <tr>
-                <td><hr></td>
-                <td><hr></td>
-                <td><hr></td>
-                <td><hr></td>
-                <td><hr></td>
-                <td><hr></td>
-            </tr>
-            {% endifequal %}
-            {% endfor %}
+        <table class="table table-hover" >
+            <thead style="text-align:center;">
+                <tr>
+                    <th scope="col">프로그램</th>
+                    <th scope="col">기간</th>
+                    <th scope="col">시간</th>
+                    <th scope="col">강사</th>
+                    <th scope="col">장소</th>
+                    <th scope="col">선택</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="padding:3px;">
+                    <td style="padding:7px;"></td>
+                    <td style="padding:7px;"></td>
+                    <td style="padding:7px;"></td>
+                    <td style="padding:7px;"></td>
+                    <td style="padding:7px;"></td>
+                    <td style="padding:7px;"></td>
+                </tr>
+                {% for object in object_list %}
+                <tr>
+                    <td>{{object.name}}</td>
+                    <td>{{object.name.start_date|date:"Y-m-d"}} ~ {{object.name.end_date|date:"Y-m-d"}}</td>
+                    <td>{{object.start_time|time:"H:i"}} ~ {{object.end_time|time:"H:i"}}</td>
+                    <td>{{object.teacher}}</td>
+                    <td>{{object.place}}</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" class="programChecked" value="{{object.id}}" name="{{object.name}}"></td>
+                </tr>
+                {% ifequal forloop.counter 3 %}
+                <tr>
+                    <td style="padding:7px;"></td>
+                    <td style="padding:7px;"></td>
+                    <td style="padding:7px;"></td>
+                    <td style="padding:7px;"></td>
+                    <td style="padding:7px;"></td>
+                    <td style="padding:7px;"></td>
+                </tr>
+                {% endifequal %}
+                {% ifequal forloop.counter 6 %}
+                <tr style="padding:3px;">
+                    <td style="padding:7px;"></td>
+                    <td style="padding:7px;"></td>
+                    <td style="padding:7px;"></td>
+                    <td style="padding:7px;"></td>
+                    <td style="padding:7px;"></td>
+                    <td style="padding:7px;"></td>
+                </tr>
+                {% endifequal %}
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
         </table>
         <input type="hidden" name="is_ajax" value="">
-        <input type="submit" style="float:right" class="btn btn-outline btn-primary pull-right" id="selectBtn" value="신청하기">
+        <input type="submit" style="float:right" class="btn btn-primary pull-right" style="width:100px;" id="selectBtn" value="신청하기">
     </form>
-    <div style="clear:right"></div>
+    <div style="clear:both; height:100px;"></div>
 
 </div>
 {% endblock %}
@@ -99,9 +110,7 @@ $(function(){
         if(count > 0){
             var check = confirm('총 '+count+'개 수업을 선택하셨습니다.\n신청하시겠습니까?');
             if(check == true){
-                console.log(obj_id_list);
                 url = $(this).attr('action');
-                console.log(url);
                 jQuery.ajaxSettings.traditional = true;
                 $.ajax({
                     url: url,
@@ -113,13 +122,15 @@ $(function(){
                     },
                 }).done(function(data){
                     $('input[name="is_ajax"]').val("");
+                    if(data.notLogin==true){
+                        alert('수업 신청을 하기 위해서는 로그인이 필요합니다.');
+                    }
                     if(data.works){
                         alert('신청 완료되었습니다.');
-                        var move = confirm('결제 페이지로 이동하겠습니까?')
+                        var move = confirm('결제 페이지로 이동하시겠습니까?')
                         if(move == true){
                             window.location.href = '{% url 'category:my_page' %}';
-                        }
-                        else{
+                        } else{
                             location.reload();
                         }
                     }
@@ -133,8 +144,6 @@ $(function(){
                     if(data.enrolledTime){
                         alert('이미 신청한 수업중에 동일한 시간대의 수업이 있습니다. \n다시 선택해주세요.')
                     }
-
-
                 });
             }
         }

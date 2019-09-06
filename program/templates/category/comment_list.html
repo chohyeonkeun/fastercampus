@@ -1,12 +1,5 @@
-<table class="table table-striped" id="comment_list">
-    <thead>
-    <tr>
-        <th colspan="7" class="align-left">댓글 목록</th>
-    </tr>
-    </thead>
-    <tbody>
-        {% for comment in comments %}
-        {% include 'category/comment/comment_single.html' %}
-        {% endfor %}
-    </tbody>
+<table class="table" id="comment_list">
+    {% for comment in comments %}
+    {% include 'category/comment/comment_single.html' %}
+    {% endfor %}
 </table>

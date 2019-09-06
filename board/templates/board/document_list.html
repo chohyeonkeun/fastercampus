@@ -1,31 +1,57 @@
 {% extends 'base.html' %}
-{% block title %}문의사항{% endblock %}
-{% block content %}
-<a href="{% url 'board:create' %}">
-    <div class="col-auto my-1" align="left">
-        <button type="submit" class="btn btn-success">Write</button>
-    </div>
-</a>
+{% block title %}
+문의사항
+{% endblock %}
 
-<br>
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <th scope="col" style="width: 5%" align="center">#</th>
-        <th scope="col" style="width: 45%" align="center">Title</th>
-        <th scope="col" style="width: 20%" align="center">User</th>
-        <th scope="col" style="width: 30%" align="center">Date</th>
-    </tr>
-    </thead>
-    {% for object in object_list %}
-    <tr>
-        <td>{{object.id}}</td>
-        <td><a href="{% url 'board:detail' object.id %}">{{object.title}}</a></td>
-        <td>{{object.author.username}}</td>
-        <td>{{object.updated}}</td>
-    </tr>
-    {% endfor %}
-</table>
+{% block extra_style %}
+<style>
+
+
+.board-write {
+    width:100px;
+    float:right;
+    margin-bottom:20px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:50px;">
+    <div class="col-auto my-1" align="right">
+        <a href="{% url 'board:create' %}" class="btn btn-outline-primary board-write">글 작성</a>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+          {% if currentTopNum %}
+              <th scope="col">Number</th>
+              <th scope="col">Title</th>
+              <th scope="col">Author</th>
+              <th scope="col">Date</th>
+          {% else %}
+              <th>Title</th>
+              <th>Author</th>
+              <th>Date</th>
+          {% endif %}
+
+        </tr>
+        </thead>
+        <tbody>
+            {% load calc %}
+            {% for object in object_list %}
+            <tr>
+                {% if currentTopNum %}
+                <th scope="row"><a class="nav-link " style="color:black;" href="{% url 'board:detail' object.id %}">{{currentTopNum|list_index:forloop.counter0}}</a></th>
+                {% endif%}
+                <td><a class="nav-link " style="color:black;" href="{% url 'board:detail' object.id %}">{{object.title}}</a></td>
+                <td><a class="nav-link " style="color:black;" href="{% url 'board:detail' object.id %}">{{object.author.username}}</a></td>
+                <td><a class="nav-link " style="color:black;" href="{% url 'board:detail' object.id %}">{{object.updated}}</a></td>
+                </a>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 <nav aria-label="Page navigation">
     <ul class="pagination justify-content-center">
@@ -41,16 +67,16 @@
     <div class="form-row align-items-center justify-content-center">
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="username" name="search_type">
-            <label class="form-check-label" for="inlineCheckbox1">User</label>
+            <label class="form-check-label" for="inlineCheckbox1">작성자</label>
         </div>
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="title" name="search_type"
                    checked>
-            <label class="form-check-label" for="inlineCheckbox2">Title</label>
+            <label class="form-check-label" for="inlineCheckbox2">제목</label>
         </div>
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="text" name="search_type">
-            <label class="form-check-label" for="inlineCheckbox3">Contents</label>
+            <label class="form-check-label" for="inlineCheckbox3">본문</label>
         </div>
     </div>
     <div class="form-row align-items-center justify-content-center">
@@ -59,7 +85,7 @@
         </div>
 
         <div class="col-auto my-1">
-            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="submit" class="btn btn-primary">검색하기</button>
         </div>
     </div>
 </form>

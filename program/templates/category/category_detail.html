@@ -1,71 +1,91 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Category Detail
+수업 상세페이지
+{% endblock %}
+
+{% block extra_style %}
+<style>
+.program-image{
+    background-image: url({{object.image.url}});
+    height: 550px;
+    filter: brightness(40%);
+    z-index:-999;
+
+}
+.program-detail-contents {
+    position: absolute;
+    top:150px;
+    width:100%;
+    z-index:9999;
+
+}
+</style>
 {% endblock %}
 
 {% block content %}
-<div>
-    <h1>{{object.name}}</h1>
-    <p>{{object.name}} 학습, 모두 똑같이 해야할까? 나에게 딱 맞는 커리큘럼으로 FIT하게 공부하세요!</p>
-    <a href="{% url 'category:program_list' %}" class="enroll">수강 신청하기</a>
-</div>
-<div>
-    <table>
-        <thead>
-            <tr>
-                <th>기간</th>
-                <th>일정</th>
-                <th>장소</th>
-                <th>문의</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    2019년 3월 1일 ~ 2019년 5월 30일<br>
-                    2019년 6월 1일 ~ 2019년 8월 31일<br>
-                    2019년 9월 1일 ~ 2019년 11월 30일<br>
-                    2019년 12월 1일 ~ 2020년 2월 28일
-                </td>
-                <td>
-                    월~금 09:00~13:30 / 13:30~18:00<br>
-                    / 18:00~22:30, 강의 4.5시간/일, 스터디 자유,<br>
-                    테스트 1시간/일
-                </td>
-                <td>
-                    2호선 성수역 부근 패스트캠퍼스 강의장
-                </td>
-                <td>
-                    조현근 매니저 02-1004-5353,<br>
-                    help@fastercampus.co.kr
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-<div>
-    <img src="{{object.image.url}}" style="width:300px; height:300px">
-    <div style="width:calc(100% - 300px); height:300px; float:right;">
-        <h3>{{object.detail_title}}</h3>
-        <p>{{object.detail_text}}</p>
+<div class="program-detail-contents" style="text-align:center;">
+    <div style="color:white;">
+        <h1 style="text-align:center;">{{object.name}}</h1>
+        <p style="font-size:18px;">{{object.name}} 학습, 모두 똑같이 해야할까? 나에게 딱 맞는 커리큘럼으로 FIT하게 공부하세요!</p>
+        <a href="{% url 'category:program_list' %}" class="btn btn-primary enroll" style="position:relative;border-radius:18px;z-index:9999999;">수강 신청하기</a>
+    </div>
+    <div style="width:1300px; background-color:white;margin-top:-20px;padding:30px; display:inline-block;opacity:0.8;">
+        <table style="text-align:center;margin-left:auto; margin-right:auto;line-height:30px;border-spacing:30px;border-collapse:separate;">
+            <thead>
+                <tr style="height:30px;font-size:20px;">
+                    <th>기간</th>
+                    <th>일정</th>
+                    <th>장소</th>
+                    <th>문의</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        2019년 3월 1일 ~ 2019년 5월 30일<br>
+                        2019년 6월 1일 ~ 2019년 8월 31일<br>
+                        2019년 9월 1일 ~ 2019년 11월 30일<br>
+                        2019년 12월 1일 ~ 2020년 2월 28일
+                    </td>
+                    <td>
+                        월~금 09:00~13:30 / 13:30~18:00<br>
+                        / 18:00~22:30, 강의 4.5시간/일, 스터디 자유,<br>
+                        테스트 1시간/일
+                    </td>
+                    <td>
+                        2호선 성수역 부근 패스트캠퍼스 강의장
+                    </td>
+                    <td>
+                        조현근 매니저 02-1004-5353,<br>
+                        help@fastercampus.co.kr
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
-
-<form action="{% url 'category:comment_create' object.id %}" method="post" id="comment_form">
-    {% csrf_token %}
-    <input type="hidden" name="is_ajax" value="">
-    <div class="form-row">
-        <div class="col-8">
-            {{comment_form.text}}
-        </div>
-        <div class="col">
-            <input type="submit" value="Comment" class="btn btn-outline-primary form-control">
-        </div>
+<div class="program-image"></div>
+<div class="container" style="padding-top:100px;">
+    <div style="height:250px; line-height:40px;">
+        <h3 style="margin-bottom:50px;"><p>{{object.detail_title}}</p></h3>
+        <p style="font-size:20px;">{{object.detail_text}}</p>
     </div>
-</form>
-<div id="docs_comment_list_area">
-    {% include 'category/comment_list.html' %}
+    <form action="{% url 'category:comment_create' object.id %}" method="post" id="comment_form" style="margin-bottom:30px;">
+        {% csrf_token %}
+        <input type="hidden" name="is_ajax" value="">
+        <div class="form-row">
+            <div class="col-8">
+                {{comment_form.text}}
+            </div>
+            <div class="col">
+                <input type="submit" value="Comment" class="btn btn-outline-primary form-control">
+            </div>
+        </div>
+    </form>
+    <div id="docs_comment_list_area">
+        {% include 'category/comment_list.html' %}
+    </div>
 </div>
 {% endblock %}
 
@@ -73,47 +93,45 @@ Category Detail
 <script type="text/javascript">
 $(function() {
    $('#comment_form').submit(function(e) {
-       e.preventDefault()
+       e.preventDefault();
        $('input[name="is_ajax"]').val("1");
        url = $(this).attr('action');
        params = $(this).serialize();
        $.ajax({
            url:url,
            method:"POST",
-           data:params
+           data:params,
        }).done(function(data) {
-           console.log(data);
-           $('#id_text').val("");
-           $('#comment_list tbody').prepend(data.html);
-           $('input[name="is_ajax"]').val("");
+           if(data.html){
+               location.reload();
+           } else if(data.notLogin) {
+               alert('댓글은 로그인 이후 가능합니다.');
+               location.reload();
+           }
        });
-       location.reload();
-       return false;
    });
-});
 
-$(function() {
-   $('#comment_list .btn_comment_delete').click(function(e) {
+   $('.btn_comment_delete').click(function(e) {
        e.preventDefault();
        var input = confirm('댓글을 삭제하시겠습니까?');
        if (input==true) {
            comment = $(this).parents('tr');
-           url = $(this).attr('href')+"?is_ajax=1";
-
+           url = $(this).attr('href');
            $.ajax({
                url:url
            }).done(function(data) {
                if (data.works) {
                    comment.remove();
+               } else {
+                   alert('정상 요청이 아닙니다.');
                }
            });
-
        }
    });
 
    $('.btn_comment_update').click(function(e) {
        e.preventDefault();
-       url = $(this).attr('href')+'?is_ajax=1';
+       url = $(this).attr('href');
        comment = $(this).parent().siblings('.comment_text');
        input = "<input type='text' class='update_text' value='"+comment.text()+"'>";
        comment.html(input);
@@ -128,6 +146,10 @@ $(function() {
                }).done(function(data) {
                    if(data.works) {
                        comment.text(text);
+                   } else if (data.notAuthor) {
+                       alert('수정 권한이 없습니다.');
+                   } else if (data.notValid) {
+                       alert('요청한 댓글 형태가 유효하지 않습니다.');
                    }
                });
            }

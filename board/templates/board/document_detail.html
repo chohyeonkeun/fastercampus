@@ -1,116 +1,143 @@
 {% extends 'base.html' %}
 {% block title %}
-Board Deatil
+문의내용 상세
+{% endblock %}
+
+{% block extra_style %}
+<style>
+.board-write {
+    width:100px;
+    float:right;
+    margin-bottom:20px;
+}
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="card" style="width:50%; height:50%;">
-    {% if object.image %}
-        <img src="{{object.image.url}}" class="card-img-top">
-    {% endif %}
-  <div class="card-body">
-      <h5 class="card-title">{{object.title}} <span class="badge badge-info">{{object.author.username}}</span></h5>
-    <p class="card-text">{{object.text}}</p>
-  </div>
-  <div class="card-body" align="right">
-    <a href="{% url 'board:update' object.id %}" class="card-link">Update</a>
-    <a href="{% url 'board:delete' object.id %}" class="card-link">Delete</a>
-  </div>
-</div>
-
-<br>
-<hr>
-<form action="{% url 'board:comment_create' object.id %}" method="post" id="comment_form">
-    {% csrf_token %}
-    <input type="hidden" name="is_ajax" value="">
-    <div class="form-row">
-        <div class="col-8">
-            {{comment_form.text}}
-        </div>
-        <div class="col">
-            <input type="submit" value="Comment" class="btn btn-outline-primary form-control">
-        </div>
+<div class="container" style="padding-top:50px;">
+    <div class="col-auto my-1" align="right">
+        <a href="{% url 'board:list' %}" class="btn btn-outline-primary board-write">돌아가기</a>
     </div>
-</form>
-<div id="docs_comment_list_area">
-    {% include 'board/comment_list.html' %}
+    <div style="clear:both"></div>
+    <div class="document-div card" style="margin-bottom:50px;">
+      <div class="card-body">
+        <h5 class="card-title">{{object.title}} <span class="badge badge-info">{{object.author.username}}</span></h5>
+        <hr>
+        <p class="card-text">{{object.text}}</p>
+        {% if object.image %}
+            <img src="{{object.image.url}}" class="card-img-top">
+        {% endif %}
+      </div>
+      <div class="card-body" align="right">
+        <a href="{% url 'board:update' object.id %}" class="card-link">수정</a>
+        <a href="{% url 'board:delete' object.id %}" class="btn-delete card-link">삭제</a>
+      </div>
+    </div>
+
+    <form action="{% url 'board:comment_create' object.id %}" method="post" id="comment_form" style="margin-bottom:20px;">
+        {% csrf_token %}
+        <input type="hidden" name="is_ajax" value="">
+        <div class="form-row">
+            <div class="col-8">
+                {{comment_form.text}}
+            </div>
+            <div class="col">
+                <input type="submit" value="Comment" class="btn btn-outline-primary form-control">
+            </div>
+        </div>
+    </form>
+    <div id="docs_comment_list_area">
+        {% include 'board/comment_list.html' %}
+    </div>
 </div>
 {% endblock %}
 
 {% block extra_script %}
 <script type="text/javascript">
 $(function() {
-    $('#comment_form').submit(function(e) {
-        // 댓글 남기기
-        $('input[name="is_ajax"]').val("1");
-        url = $(this).attr('action');
-        params = $(this).serialize(); //현재 값들을 하나로 모은다
-        $.ajax({
-            url:url,
-            method:"POST",
-            data:params
-        }).done(function(data) {
-            // 댓글 입력창 내용 비우기
-            $('#id_text').val("");
-            $('#comment_list tbody').prepend(data.html); // tbody 시작 지점에 요소 끼워넣기
-            // $('#comment_list tbody').append(tr); // tbody 끝 지점에 요소 끼워넣기
-            // is_ajax 값 초기화
-            $('input[name="is_ajax"]').val("");
-        });
-        location.reload();
-        return false; //페이지를 갔다오지않고 댓글이 남겨지게 페이지 이동을 막는다
-    });
-    $('.btn_comment_delete').click(function(e) {
+    $('.btn-delete').click(function(e){
         e.preventDefault();
-        var input = confirm('댓글을 삭제하시겠습니까?');
-        if (input==true) {
-            //alert('댓글을 삭제하였습니다.');
-            comment = $(this).parents('tr'); // 버튼을 감싸고 있는 tr 찾기
-            url = $(this).attr('href')+"?is_ajax=1"; // ajax호출임을 구분할 수 있게 값 추가
+        var url = $(this).attr('href');
+        var check = confirm('해당 게시물을 삭제하시겠습니까?');
+        if(check==true){
             $.ajax({
-                url:url
-            }).done(function(data) {
-                if (data.works) {
-                    comment.remove(); // 해당 객체 지우기
+                url : url,
+            }).done(function(data){
+                if(data.works){
+                    alert('게시물이 삭제되었습니다.');
+                    window.location.href = "{% url 'board:list' %}"
+                } else if(data.noAuthor){
+                    alert('삭제할 권한이 없습니다.');
+                } else {
+                    alert('정상 요청이 아닙니다.');
                 }
             });
         }
     });
-    $('.btn_comment_update').click(function(e) {
-        e.preventDefault();
-        url = $(this).attr('href')+'?is_ajax=1';
-        comment = $(this).parent().siblings('.comment_text'); // 원래 댓글을 찾음
-        input = "<input type='text' class='update_text' value='"+comment.text()+"'>";
-        comment.html(input);
-        $('.update_text').keypress(function(e){
-            if (e.keyCode==13) {
-                text = $(this).val();
-                $.ajax({
-                    url:url,
-                    data:{
-                        text:text
-                    }
-                }).done(function(data) {
-                    if(data.works) {
-                        comment.text(text);
-                    }
-                });
-            }
-        });
-        return false;
-        text = prompt('수정될 댓글 내용을 입력하세요.', comment.text()); // 원래 댓글을 프롬프트로 보여줌
-        if (text==null) return false; // 입력 취소면 함수 종료
-        $.ajax({
-            url:url,
-            data:{
-                text:text
-            }
-        }).done(function(data) {
-            if(data.works) {
-                comment.text(text);
-            }
-        });
-    });
+
+   $('#comment_form').submit(function(e) {
+       e.preventDefault();
+       $('input[name="is_ajax"]').val("1");
+       url = $(this).attr('action');
+       params = $(this).serialize();
+       $.ajax({
+           url:url,
+           method:"POST",
+           data:params,
+       }).done(function(data) {
+           if(data.html){
+               location.reload();
+           } else if(data.notLogin) {
+               alert('댓글은 로그인 이후 가능합니다.');
+               location.reload();
+           }
+       });
+   });
+
+   $('.btn_comment_delete').click(function(e) {
+       e.preventDefault();
+       var input = confirm('댓글을 삭제하시겠습니까?');
+       if (input==true) {
+           comment = $(this).parents('tr');
+           url = $(this).attr('href');
+           $.ajax({
+               url:url
+           }).done(function(data) {
+               if (data.works) {
+                   comment.remove();
+               } else {
+                   alert('정상 요청이 아닙니다.');
+               }
+           });
+       }
+   });
+
+   $('.btn_comment_update').click(function(e) {
+       e.preventDefault();
+       url = $(this).attr('href');
+       comment = $(this).parent().siblings('.comment_text');
+       input = "<input type='text' class='update_text' value='"+comment.text()+"'>";
+       comment.html(input);
+       $('.update_text').keypress(function(e){
+           if (e.keyCode==13) {
+               text = $(this).val();
+               $.ajax({
+                   url:url,
+                   data:{
+                       text:text
+                   }
+               }).done(function(data) {
+                   if(data.works) {
+                       comment.text(text);
+                   } else if (data.notAuthor) {
+                       alert('수정 권한이 없습니다.');
+                   } else if (data.notValid) {
+                       alert('요청한 댓글 형태가 유효하지 않습니다.');
+                   }
+               });
+           }
+       });
+   });
 });
 </script>
 {% endblock %}

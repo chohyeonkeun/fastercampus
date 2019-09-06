@@ -2,6 +2,6 @@
     <td colspan="10" class="comment_text">{{comment.text}}</td>
     <td>{{comment.author.username}}</td>
     <td>{{comment.created}}</td>
-    <td><a href="{% url 'board:comment_update' comment.id %}" class="btn btn-warning btn-sm btn_comment_update">update</a></td>
-    <td><a href="{% url 'board:comment_delete' comment.id %}" class="btn btn-danger btn-sm btn_comment_delete">delete</a></td>
+    <td><a href="{% url 'board:comment_update' comment.id %}" class="btn btn-light btn-sm btn_comment_update">수정</a></td>
+    <td><a href="{% url 'board:comment_delete' comment.id %}" class="btn btn-light btn-sm btn_comment_delete">삭제</a></td>
 </tr>

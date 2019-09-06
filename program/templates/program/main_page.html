@@ -1,140 +1,141 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>main page</title>
+{% extends 'base.html' %}
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+{% block title %}
+FasterCampus
+{% endblock %}
 
-    {% load static %}
-    <style>
-        #main_div {
-            height: 450px;
-            background-image:url({% static 'images/main_picture.jpg' %});
-            background-position : center top;
-            background-color: transparent;
-            background-repeat: no-repeat;
-            background-size: cover;
-            overflow : hidden;
-    </style>
+{% load static %}
+{% block extra_style %}
+<style>
+.introduceProgram:hover {
+    cursor: pointer;
+}
+.introduceProgram {
+    width: 31%;
+    float: left;
+    margin: 20px 3px 20px 12px;
+    background-color: white;
+}
+#main_div {
+    height: 500px;
+    background-image:url({% static 'images/main_picture.jpg' %});
+    background-position : center top;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width:100%;
+    filter: brightness(40%);
+}
+.main_title {
+    position: absolute;
+    top:180px;
+    left: 670px;
+    text-align: center;
+    z-index: 9999;
+    color: white;
 
-    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId={{naver_id}}"></script>
-</head>
+}
+</style>
+{% endblock %}
 
-<body>
-    <div style="height:70px; background-color:rgb(0, 0, 153); line-height:70px">
-        <div style="display:inline-block; vertical-align:middle; line-height:normal;">
-            <ul class="nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/" style="color:white; font-weight:bold; padding-top:12px">FASTERCAMPUS</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'category:list' %}" style="color:white; font-weight:bold;">프로그램</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'category:program_list' %}" style="color:white; font-weight:bold;">수강신청</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'board:list' %}" style="color:white; font-weight:bold;">문의사항</a>
-                </li>
-                {% if not user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'accounts:login' %}" style="float:right; color:white; font-weight:bold;">로그인</a>
-                </li>
-                {% endif %}
-                {% if not user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'accounts:signup' %}" style="float:right; color:white; font-weight:bold;">회원가입</a>
-                </li>
-                {% endif %}
-                {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'category:my_page' %}" style="float:right; color:white; font-weight:bold;">신청내역</a>
-                </li>
-                {% endif %}
-                {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'accounts:logout' %}" style="float:right; color:white; font-weight:bold;">로그아웃</a>
-                </li>
-                {% endif %}
-            </ul>
+{% block content %}
+<div class="main_title">
+    <h1 style="margin-bottom:30px;">패스터캠퍼스 SCHOOL</h1>
+    <h3 style="margin-bottom:20px;">커리어 전환을 위한 가장 혁신적인 교육 기관</h3>
+    <p style="font-size:20px; margin:0;">Change your career,</p>
+    <p style="font-size:20px; margin-bottom:30px;">Challenge your dream!</p>
+    <a href="{% url 'category:program_list' %}" class="btn btn-primary" style="font-size:18px;border-radius:20px;">수강 신청하기</a>
+</div>
+<div id="main_div"></div>
+
+<div class="container">
+    <p style="display:inline-block;padding:20px;font-size:20px; z-index:999; background-color:white;position:relative; top:67px;"><b>관심 분야를 찾아보세요</b></p>
+    <hr>
+    <div class="subject_info">
+        {% for object in object_list %}
+        <div class="card introduceProgram" onclick="location.href='{% url 'category:detail' object.id %}';">
+            <blockquote class="blockquote mb-0 card-body">
+                <p style="text-align:right;font-size:18px;"><b>{{object.name}}</b></p>
+                <p style="text-align:right;font-size:15px;color:grey;">{{object.english_name}}</p>
+                <p style="text-align:right;">
+                    <a href="{% url 'category:detail' object.id %}" class="btn btn-outline-primary" style="border-radius:18px;">강의 자세히 보기</a>
+                </p>
+                </footer>
+              </blockquote>
         </div>
+        {% endfor %}
+        <div style="clear:both;"></div>
+    </div>
+    <p style="display:inline-block;padding:20px;font-size:20px; z-index:999; background-color:white;position:relative; top:67px;"><b>Contact Info.</b></p>
+    <hr>
+    <div class="contact_info" style="text-align:center;">
+        <div style="height:30px;"></div>
+            <div style="display:inline-block;">
+                <div class="card contactInfo" style="float:left;margin-right:20px;border:none;">
+                    <blockquote class="blockquote mb-0 card-body">
+                        <p style="font-size:18px;">Email: help@fastercampus.co.kr</p>
+                        <p style="font-size:18px;">Phone: 02-8282-1004</p>
+                    </blockquote>
+                </div>
+                <div class="card contactInfo" style="float:left;margin-left:20px;border:none;">
+                    <blockquote class="blockquote mb-0 card-body">
+                        <p style="font-size:18px;">[문의시간]</p>
+                        <p style="font-size:18px;">월~금:오전 09:00 ~ 오후 10:30</p>
+                        <p style="font-size:18px;">* 주말, 공휴일에는 상담이 불가합니다.</p>
+                    </blockquote>
+                </div>
+            </div>
+
+        <div style="clear:both;"></div>
     </div>
 
-    <div id="main_div">
-        <div class="main_title">
-            <h1>패스터캠퍼스 SCHOOL</h1>
-            <h3>커리어 전환을 위한 가장 혁신적인 교육 기관</h3>
-            <p>Change your career</p>
-            <p>Challenge your dream!</p>
-            <a href="{% url 'category:program_list' %}">수강 신청하기</a>
-        </div>
+    <p style="display:inline-block;padding:20px;font-size:20px; z-index:999; background-color:white;position:relative; top:67px;"><b>패스터캠퍼스 강의장 위치 안내</b></p>
+    <hr>
+    <div class="place-info" id="map" style="height:500px; margin-top:50px;">
     </div>
-    <div id="main_contents">
-        <div class="subject_info">
-            {% for object in object_list %}
-            <div>
-                {{object.name}}
-                {{object.english_name}}
-                <a href="{% url 'category:detail' object.id %}">강의 자세히 보기</a>
-            </div>
-            {% endfor %}
-        </div>
-        <div class="contact_info">
-            <div>
+</div>
+{% endblock %}
 
-            </div>
-            <div>
-                <p>[문의시간]</p>
-                <p>월~금:오전 09:00 ~ 오후 10:30</p>
-                <p>* 주말, 공휴일에는 상담이 불가합니다.</p>
-            </div>
-        </div>
-        <div class="place-info" id="map" style="width:100%; height:500px;">
-        </div>
-    </div>
+{% block extra_script %}
+<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId={{naver_id}}"></script>
+<script>
+    var HOME_PATH = window.HOME_PATH || '.';
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script>
-        var HOME_PATH = window.HOME_PATH || '.';
-
-        var cityhall = new naver.maps.LatLng(37.49555149181104, 127.02929299748946),
-            map = new naver.maps.Map('map', {
-                center: cityhall.destinationPoint(0, 500),
-                zoom: 10
-            }),
-            marker = new naver.maps.Marker({
-                map: map,
-                position: cityhall
-            });
-
-        var contentString = [
-                '<div class="iw_inner" style="padding:20px;">',
-                '   <h3>패스터캠퍼스</h3>',
-                '   <p>서울특별시 강남구 강남대로 364 / 미왕빌딩 10층, 11층</p>',
-                '   <hr>',
-                '   <p>서울특별시 강남구 역삼동 826-21<br />',
-                '   </p>',
-                '</div>'
-            ].join('');
-
-        var infowindow = new naver.maps.InfoWindow({
-            content: contentString
+    var cityhall = new naver.maps.LatLng(37.5666805, 126.9784147),
+        map = new naver.maps.Map('map', {
+            center: cityhall.destinationPoint(0, 500),
+            zoom: 10
+        }),
+        marker = new naver.maps.Marker({
+            map: map,
+            position: cityhall
         });
 
-        naver.maps.Event.addListener(marker, "click", function(e) {
-            if (infowindow.getMap()) {
-                infowindow.close();
-            } else {
-                infowindow.open(map, marker);
-            }
-        });
+    var contentString = [
+            '<div class="iw_inner" style="padding:20px;">',
+            '   <h3>패스터캠퍼스</h3>',
+            '   <p>서울특별시 강남구 강남대로 364 / 미왕빌딩 10층, 11층</p>',
+            '   <hr>',
+            '   <p>서울특별시 강남구 역삼동 826-21<br />',
+            '   </p>',
+            '</div>'
+        ].join('');
 
-        infowindow.open(map, marker);
+    var infowindow = new naver.maps.InfoWindow({
+        content: contentString
+    });
 
-    </script>
+    naver.maps.Event.addListener(marker, "click", function(e) {
+        if (infowindow.getMap()) {
+            infowindow.close();
+        } else {
+            infowindow.open(map, marker);
+        }
+    });
 
-</body>
-</html>
+    infowindow.open(map, marker);
+
+</script>
+{% endblock %}
+
+
+
