@@ -71,21 +71,25 @@ def document_list(request):
 from .forms import DocumentForm
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-@login_required
+from django.views.decorators.csrf import csrf_protect
+
+@csrf_protect
 def document_create(request):
-
     if request.method == "POST":
-
         form = DocumentForm(request.POST, request.FILES)
         form.instance.author_id = request.user.id
         if form.is_valid():
-            document = form.save()
-            return redirect(document)
+            form.save()
+            return JsonResponse({'works':True})
+        return JsonResponse({'notValid':True})
     else:
-
-        form = DocumentForm() # empty page
-
-    return render(request, 'board/document_create.html', {'form':form})
+        if request.is_ajax():
+            if request.user.is_anonymous:
+                return JsonResponse({'notLogin':True})
+            form = DocumentForm() # empty page
+            html = render_to_string('board/document_create.html', {'form':form})
+            return JsonResponse({'html':html})
+        raise Http404
 
 def document_update(request, document_id):
     if request.method == "POST":

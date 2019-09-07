@@ -127,7 +127,7 @@ $(function(){
                     }
                     if(data.works){
                         alert('신청 완료되었습니다.');
-                        var move = confirm('결제 페이지로 이동하시겠습니까?')
+                        var move = confirm('신청한 수업을 확인해보시겠습니까?');
                         if(move == true){
                             window.location.href = '{% url 'category:my_page' %}';
                         } else{

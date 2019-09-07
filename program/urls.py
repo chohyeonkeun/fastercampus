@@ -19,5 +19,7 @@ urlpatterns = [
     path('mypage/', my_page, name='my_page'),
     path('enroll/delete/', enroll_delete, name='enroll_delete'),
     path('pay_proceed/', pay_proceed, name='pay_proceed'),
+    path('payed_page/', payed_page, name='payed_page'),
+    path('payed_delete/', payed_delete, name='payed_delete'),
     path('completed_hide/', completed_hide, name='completed_hide'),
 ]

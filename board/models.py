@@ -27,7 +27,7 @@ class Document(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='documents')
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='documents')
     title = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=120, db_index=True, unique=True, allow_unicode=True)
+    slug = models.SlugField(max_length=120, db_index=True, allow_unicode=True)
     text = models.TextField()
     image = models.ImageField(upload_to='board_images/%Y/%m/%d', blank=True)
     created = models.DateTimeField(auto_now_add=True)

@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}
+결제 페이지
+{% endblock %}
+
+{% block extra_style %}
+<style>
+    .enroll_delete:hover{
+        cursor:pointer;
+    }
+    .pay-completed:hover {
+        cursor:pointer;
+    }
+    .pay-completed-hide:hover {
+        cursor:pointer;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:50px;">
+    <div style="text-align:center;width:200px;margin:30px auto 60px auto"><h2><b>결제 내역</b></h2></div>
+
+    <div id="nothing-page" style="text-align:center; display:none;">
+        결제한 수업이 없습니다.
+    </div>
+    {% if object_list %}
+    <table class="table table-hover" >
+        <thead style="text-align:center;">
+            <tr id="payed-category-name">
+                <th scope="col">프로그램</th>
+                <th scope="col">기간</th>
+                <th scope="col">시간</th>
+                <th scope="col">강사</th>
+                <th scope="col">장소</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for object in object_list %}
+            <tr>
+                <td>{{object.name}}</td>
+                <td>{{object.name.start_date|date:"Y-m-d"}} ~ {{object.name.end_date|date:"Y-m-d"}}</td>
+                <td>{{object.start_time|time:"H:i"}} ~ {{object.end_time|time:"H:i"}}</td>
+                <td>{{object.teacher}}</td>
+                <td>{{object.place}}</td>
+                <td>
+                    <button style="font-size:12px;color:rgb(153, 153, 153);" class="btn btn-light pay-completed-hide" value="{{object.id}}">내역 삭제</button>
+                </td>
+            </tr>
+        {% endfor %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="clear:both"></div>
+    {% else %}
+    <div style="text-align:center;">
+        결제한 수업이 없습니다.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script type="text/javascript">
+$(function(){
+    $('.pay-completed-hide').click(function(e){
+        var check = confirm('결제된 수업 내역을 완전히 삭제하시겠습니까?');
+
+        if(check == true){
+            url = '{% url 'category:payed_delete' %}';
+            obj_id = $(this).val();
+            obj_program = $(this).parents('tr');
+            $.ajax({
+                url: url,
+                method: "POST",
+                data: {
+                    'obj_id': obj_id,
+                    'csrfmiddlewaretoken':'{{csrf_token}}',
+                },
+            }).done(function(data){
+                if(data.works) {
+                    obj_program.remove();
+                    if (data.program_exists == false) {
+                        $('#payed-category-name').parents('table').remove();
+                        $('#nothing-page').css('display','block');
+                    }
+                } else if (data.notLogin){
+                    alert('로그인이 필요합니다.');
+                } else {
+                    alert('정상적인 요청이 아닙니다.');
+                }
+            });
+        }
+    });
+
+});
+</script>
+{% endblock %}

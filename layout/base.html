@@ -47,6 +47,9 @@
                     <a class="nav-link user-logout" href="{% url 'accounts:logout' %}" style="float:right; color:white; font-weight:bold; margin-right:30px;">로그아웃</a>
                 </li>
                 <li style="float:right;">
+                    <a class="nav-link" href="{% url 'category:payed_page' %}" style="float:right; color:white; font-weight:bold;">결제내역</a>
+                </li>
+                <li style="float:right;">
                     <a class="nav-link" href="{% url 'category:my_page' %}" style="float:right; color:white; font-weight:bold;">신청내역</a>
                 </li>
                 {% endif %}
@@ -55,7 +58,7 @@
     </div>
 
     <!--회원가입 modal-->
-    <div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModalLabel" aria-hidden="true">
+    <div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModalLabel" aria-hidden="true" style="z-index:999999;">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -95,7 +98,7 @@
 
 
     <!--로그인 modal-->
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true" style="z-index:999999;">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -238,7 +241,7 @@
                 }).done(function(data){
                     if(data.works){
                         alert('로그아웃 되었습니다.');
-                        location.reload();
+                        window.location.href = '{% url 'category:main_page' %}';
                     } else {
                         alert('정상 요청이 아닙니다.');
                     }

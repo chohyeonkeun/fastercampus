@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-My Page
+마이페이지
 {% endblock %}
 
 {% block extra_style %}
@@ -27,7 +27,8 @@ My Page
         신청한 수업이 없습니다.
     </div>
     {% if object_list %}
-    <form action="{% url 'category:pay_proceed' %}" method="post" id="payProgram">
+    <form action="" method="post" id="payProgram">
+        {% csrf_token %}
         <table class="table table-hover" >
             <thead style="text-align:center;">
                 <tr id="category-name">
@@ -50,11 +51,13 @@ My Page
                     <td>{{object.teacher}}</td>
                     <td>{{object.place}}</td>
                     {% if not user in object.payed.all %}
-                        <td><a href="#" style="font-size:12px;color:rgb(153, 153, 153);" class="btn btn-light pull-right enroll_delete" value="{{object.id}}">신청 취소</a></td>
+                        <td>
+                            <button style="font-size:12px;color:rgb(153, 153, 153);" class="btn btn-light enroll_delete" value="{{object.id}}">신청 취소</button>
+                        </td>
                     {% else %}
                         <td>
-                            <a href="#" style="font-size:12px;color:rgb(0, 102, 255);" class="btn btn-outline-primary pay-completed">결제 완료</a>
-                            <a href="#" style="font-size:12px;color:rgb(153, 153, 153);" class="btn btn-light pay-completed-hide" value="{{object.id}}">삭제</a>
+                            <button style="font-size:12px;color:rgb(0, 102, 255);" class="btn btn-outline-primary pay-completed">결제 완료</button>
+                            <button style="font-size:12px;color:rgb(153, 153, 153);" class="btn btn-light pay-completed-hide" value="{{object.id}}">지우기</button>
                         </td>
                     {% endif %}
                 </tr>
@@ -85,29 +88,34 @@ My Page
 <script type="text/javascript">
 $(function(){
     $('.enroll_delete').click(function(e){
+        e.preventDefault();
         var check = confirm('해당 수업을 삭제하시겠습니까?');
+
         if(check == true){
             url = '{% url 'category:enroll_delete' %}';
-            obj_id = $(this).val();
+            obj_id = $(this).attr('value');
             obj_program = $(this).parents('tr');
+
             $.ajax({
                 url: url,
-                method: "POST",
                 data: {
                     'obj_id': obj_id,
-                    'csrfmiddlewaretoken':'{{csrf_token}}',
-                    'is_ajax': true,
                 },
             }).done(function(data){
                 if(data.works) {
-                    obj_program.prev().remove();
                     obj_program.remove();
                     if (data.program_exists == false) {
                         $('#category-name').parents('table').remove();
                         $('#nothing-page').css('display','block');
-                        $('#btn-payment').css('display','none');
+                        $('#btn-pay').css('display','none');
                     }
+                } else if (data.notLogin){
+                    alert('로그인이 필요합니다.');
+                } else {
+                    alert('정상적인 요청이 아닙니다.');
                 }
+            }).fail(function(xhr, textStatus, errorThrown){
+                alert(xhr.responseText);
             });
         }
     });
@@ -117,35 +125,35 @@ $(function(){
         var check = confirm('결제된 수업을 화면에서 사라지도록 하시겠습니까?');
 
         if(check == true){
-            url = '{% url 'category:completed_hide' %}';
-            obj_id = $(this).val();
-            obj_program = selected_object.parents('tr');
+            url = '{% url 'category:enroll_delete' %}';
+            obj_id = $(this).attr('value');
+            obj_program = $(this).parents('tr');
+
             $.ajax({
                 url: url,
-                method: "POST",
                 data: {
                     'obj_id': obj_id,
-                    'csrfmiddlewaretoken':'{{csrf_token}}',
                 },
             }).done(function(data){
                 if(data.works) {
-                    obj_program.prev().remove();
                     obj_program.remove();
                     if (data.program_exists == false) {
                         $('#category-name').parents('table').remove();
                         $('#nothing-page').css('display','block');
-                        $('#btn-payment').css('display','none');
+                        $('#btn-pay').css('display','none');
                     }
                 } else if (data.notLogin){
                     alert('로그인이 필요합니다.');
                 } else {
                     alert('정상적인 요청이 아닙니다.');
                 }
+            }).fail(function(xhr, textStatus, errorThrown){
+                alert(xhr.responseText);
             });
         }
     });
 
-    $('#payProgram').submit(function(e){
+    $('#btn-pay').click(function(e){
         e.preventDefault();
         var count = 0;
         var obj_id_list = new Array();
@@ -155,13 +163,15 @@ $(function(){
             count += 1;
         });
 
+        console.log(obj_id_list);
+        console.log(count);
         if(count == 0) {
-            alert('결제할 수업을 선택해주세요.');
+           alert('결제할 수업을 선택해주세요.');
         }
         if(count > 0) {
             var check = confirm('총 '+count+'개 수업을 선택하셨습니다. \n결제하시겠습니까?');
             if(check == true){
-                url = $('#payProgram').attr('action');
+                url = '{% url 'category:pay_proceed' %}';
                 jQuery.ajaxSettings.traditional = true;
 
                 $.ajax({

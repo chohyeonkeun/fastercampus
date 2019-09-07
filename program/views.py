@@ -120,13 +120,13 @@ def program_list(request):
     programs = Program.objects.all()
     return render(request, 'program/program_list.html', {'object_list':programs})
 
+
+
 from util.decorators import login_required
 from django.http import HttpResponse
 
 
-
 def program_submit(request):
-
     if request.is_ajax():
         obj_id_list = request.POST.getlist('obj_id_list[]')
         if request.user.is_anonymous:
@@ -144,14 +144,17 @@ def program_submit(request):
                 if program_i.end_time > enrolled_program.start_time and program_i.start_time < enrolled_program.end_time:
                     return JsonResponse({'enrolledTime':True})
 
+
             # 신청할 때, 겹치는 시간대 신청했는지 확인하여 겹치는 시간대 있으면 overlaps True 형태로 전달
-            if i == len(obj_id_list) - 1:
-                break
-            for j in range(len(obj_id_list) - i - 1):
-                j = j + i + 1
-                program_j = Program.objects.get(pk=int(obj_id_list[j]))
-                if program_i.end_time > program_j.start_time and program_i.start_time < program_j.end_time:
-                    return JsonResponse({'overlaps': True})
+            if len(obj_id_list) > 1:
+                if i == len(obj_id_list) - 1:
+                    program_i.enroll.add(user)
+                    break
+                for j in range(len(obj_id_list) - i - 1):
+                    j = j + i + 1
+                    program_j = Program.objects.get(pk=int(obj_id_list[j]))
+                    if program_i.end_time > program_j.start_time and program_i.start_time < program_j.end_time:
+                        return JsonResponse({'overlaps': True})
 
 
             program_i.enroll.add(user)
@@ -168,22 +171,28 @@ def my_page(request):
 
 
 def enroll_delete(request):
-    is_ajax = request.GET.get('is_ajax') if 'is_ajax' in request.GET else request.POST.get('is_ajax',False)
-    print("Test ajax", is_ajax)
-    if is_ajax:
-        obj_id = request.POST.get('obj_id')
-        user = request.user
+    if request.is_ajax():
+        if request.user.is_anonymous:
+            return JsonResponse({'notLogin':True})
+
+        obj_id = request.GET.get('obj_id')
         program = Program.objects.get(pk=int(obj_id))
-        program.enroll.remove(user)
 
-        user_program = user.enrolled_program.all()
-        if not user_program.exists():
-            program_exists = False
-        else:
-            program_exists = True
-        return JsonResponse({'works':True, 'program_exists':program_exists})
+        user = request.user
+        # 사용자가 해당 수업 enroll에 있는 경우
+        if user in program.enroll.all():
+            program.enroll.remove(user)
+            user_programs = user.enrolled_program.all()
+            if not user_programs.exists():
+                program_exists = False
+            else:
+                program_exists = True
+            return JsonResponse({'works':True, 'program_exists':program_exists})
 
 
+
+        # 이미 해당 수업 enroll에 속해있지 않은 상태
+        return JsonResponse({'notEnrolled':True})
 def pay_proceed(request):
     if request.is_ajax():
         # 요청한 사용자가 비로그인한 상태인 경우
@@ -206,19 +215,50 @@ def completed_hide(request):
         if request.user.is_anonymous:
             return JsonResponse({'notLogin':True})
 
-        obj_id = request.POST.get('obj_id')
+        obj_id = request.GET.get('obj_id')
         program = Program.objects.get(pk=int(obj_id))
 
         user = request.user
-        # 사용자가 해당 수업 enrolled에 있는 경우
-        if user in program.enrolled.all():
-            program.enrolled.remove(user)
-            user_program = user.enrolled_program.all()
-            if not user_program.exists():
+        # 사용자가 해당 수업 enroll에 있는 경우
+        if user in program.enroll.all():
+            program.enroll.remove(user)
+            user_programs = user.enrolled_program.all()
+            if not user_programs.exists():
                 program_exists = False
             else:
                 program_exists = True
             return JsonResponse({'works':True, 'program_exists':program_exists})
 
-        # 이미 해당 수업 enrolled에 속해있지 않은 상태
+        # 이미 해당 수업 enroll에 속해있지 않은 상태
         return JsonResponse({'notEnrolled':True})
+
+
+def payed_page(request):
+    user = request.user
+    payed_programs = user.payed_program.all()
+
+    return render(request, 'program/payed_page.html', {'object_list': payed_programs})
+
+
+def payed_delete(request):
+    if request.is_ajax():
+        if request.user.is_anonymous:
+            return JsonResponse({'notLogin':True})
+
+        obj_id = request.POST.get('obj_id')
+        program = Program.objects.get(pk=int(obj_id))
+
+        user = request.user
+
+        if user in program.payed.all():
+            program.payed.remove(user)
+            payed_programs = user.payed_program.all()
+            if not payed_programs.exists():
+                program_exists = False
+            else:
+                program_exists = True
+
+            return JsonResponse({'works':True, 'program_exists':program_exists})
+
+        # 이미 해당 수업 payed에 속해있지 않은 상태
+        return JsonResponse({'notPayed':True})

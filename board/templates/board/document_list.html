@@ -16,7 +16,8 @@
 {% endblock %}
 
 {% block content %}
-<div class="container" style="padding-top:50px;">
+<div class="container document-list-container" style="padding-top:50px;">
+    <div style="text-align:center;width:200px;margin:30px auto 60px auto"><h2><b>문의 사항</b></h2></div>
     <div class="col-auto my-1" align="right">
         <a href="{% url 'board:create' %}" class="btn btn-outline-primary board-write">글 작성</a>
     </div>
@@ -53,7 +54,7 @@
     </table>
 </div>
 
-<nav aria-label="Page navigation">
+<nav aria-label="Page navigation" class="page-navigation">
     <ul class="pagination justify-content-center">
         {% for page in page_range %}
         <li class="page-item"><a class="page-link" href="{% url 'board:list' %}?page={{page}}">{{page}}</a></li>
@@ -93,4 +94,83 @@
 {% endblock %}
 
 {% block extra_script %}
+<script>
+$(function(){
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $('.board-write').click(function(e){
+        e.preventDefault();
+        var url = $(this).attr('href');
+        $.ajax({
+            url : url,
+        }).done(function(data){
+            if(data.notLogin){
+                alert('글 작성은 로그인한 회원만 가능합니다.');
+            } else if(data.html){
+                $('.board-write').parents('.document-list-container').before(data.html);
+                $('.board-write').parents('.document-list-container').hide();
+                $('.page-navigation').hide();
+                $('#search_form').hide();
+
+                $('.btn-document-create').click(function(e){
+                    e.preventDefault();
+                    url = $('#document-create').attr('action');
+                    var form = $('#document-create')[0];
+                    var formData = new FormData(form);
+                    formData.set("image", $('#id_image')[0].files[0]);
+                    var csrftoken = getCookie('csrftoken');
+
+                    $.ajaxSetup({
+                        beforeSend: function(xhr, settings) {
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        }
+                    });
+                    $.ajax({
+                        url : url,
+                        processData: false,
+                        contentType: false,
+                        cache: false,
+                        type: "POST",
+                        data: formData,
+                    }).done(function(data){
+                        if(data.works){
+                            alert('작성한 글이 게시되었습니다.');
+                            window.location.href = "{% url 'board:list' %}";
+                        } else if (data.notValid){
+                            alert('유효하지 않은 폼입니다.')
+                        } else {
+                            alert('정상 요청이 아닙니다.');
+                        }
+                    }).fail(function(xhr, textStatus, errorThrown){
+                        alert(xhr.responseText);
+                    });
+                });
+            } else {
+                alert('정상 요청이 아닙니다.');
+            }
+        });
+    });
+});
+</script>
 {% endblock %}
